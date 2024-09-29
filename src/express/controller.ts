@@ -94,11 +94,18 @@ class Controller<RequestSchema extends object, ResponseSchema extends object = {
   responseSchema: CreateControllerParams<RequestSchema>['responseSchema'];
 
   create = (controller: Handler<RequestSchema, ResponseSchema>) => {
+    let res: ResponseCustom & ResponseSchema = {} as any;
+
+    res = {
+      ...res,
+      ...this.responseSchema?.(res) || {} as any,
+    }
     const handler: Handler<RequestSchema> = (async (
       req,
-      res,
+      resProp,
       next,
     ) => {
+      res = { ...res, ...resProp } as any;
       // req = { ...this.requestSchema, ...req };
       // res = { ...(this.responseSchema({ req, res, next }) || {}) as any, ...res };
       // res = Object.assign(res, this.responseSchema?.({ req, res, next }) || {});
@@ -138,9 +145,7 @@ class Controller<RequestSchema extends object, ResponseSchema extends object = {
       //* Si no hay atributos o where, se elimina el objeto findConfig
       if (!Object.keys(findConfig).length) delete (req as any).findConfig;
 
-      const resPayload = this.responseSchema?.({ req, res, next }) || {} as ResponseSchema;
-
-      await controller(req, { ...resPayload, ...res } as any, next)?.catch(next);
+      await controller(req, res as any, next)?.catch(next);
     });
     return handler as HandlerDefault;
   }
