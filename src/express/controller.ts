@@ -99,8 +99,8 @@ class Controller<RequestSchema extends object, ResponseSchema extends object = {
       res,
       next,
     ) => {
-      req = { ...this.requestSchema, ...req };
-      res = { ...(this.responseSchema({ req, res, next }) || {}) as any, ...res };
+      // req = { ...this.requestSchema, ...req };
+      // res = { ...(this.responseSchema({ req, res, next }) || {}) as any, ...res };
       // res = Object.assign(res, this.responseSchema?.({ req, res, next }) || {});
       const parseToJSON = <T extends object | string>(value: T) => {
         const isString = typeof value === 'string';
@@ -138,9 +138,9 @@ class Controller<RequestSchema extends object, ResponseSchema extends object = {
       //* Si no hay atributos o where, se elimina el objeto findConfig
       if (!Object.keys(findConfig).length) delete (req as any).findConfig;
 
-      await controller(req, res as any, next)?.catch(next);
+      const resPayload = this.responseSchema?.({ req, res, next }) || {} as ResponseSchema;
 
-
+      await controller(req, { ...resPayload, ...res } as any, next)?.catch(next);
     });
     return handler as HandlerDefault;
   }
