@@ -94,18 +94,13 @@ class Controller<RequestSchema extends object, ResponseSchema extends object = {
   responseSchema: CreateControllerParams<RequestSchema>['responseSchema'];
 
   create = (controller: Handler<RequestSchema, ResponseSchema>) => {
-    let res: ResponseCustom & ResponseSchema = {} as any;
-
-    res = {
-      ...res,
-      ...this.responseSchema?.(res) || {} as any,
-    }
+    
     const handler: Handler<RequestSchema> = (async (
       req,
-      resProp,
+      res,
       next,
     ) => {
-      res = { ...res, ...resProp } as any;
+      // res = { ...res, ...resProp } as any;
       // req = { ...this.requestSchema, ...req };
       // res = { ...(this.responseSchema({ req, res, next }) || {}) as any, ...res };
       // res = Object.assign(res, this.responseSchema?.({ req, res, next }) || {});
