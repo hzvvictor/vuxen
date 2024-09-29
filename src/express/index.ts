@@ -1,4 +1,4 @@
-import Controller from "./controller";
+import Controller from "./Controller";
 import useErrorHandler from "./useErrorHandler";
 
 export { Controller, useErrorHandler };
