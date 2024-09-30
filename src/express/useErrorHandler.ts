@@ -22,6 +22,7 @@ const useErrorHandler = (error: any, req: Request, res: Response, next: NextFunc
       message: error.message
     });
   }
+  console.log(`> Error: ${error.message}`, error);
   return res.status(500).json({
     message: error.message,
     error: error
